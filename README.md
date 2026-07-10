@@ -62,36 +62,6 @@ npm run test
 
 ---
 
-## 🛠️ Architecture and Extensibility
-
-### 1. The Dynamic Widget Registry Pattern
-We separated the **Dashboard Grid Shell** from individual **Widget implementations**. All chart configs are registered in a single central manifest: `frontend/src/registry/WidgetRegistry.tsx`.
-
-To add a **5th Chart Type** (e.g. Radar Chart):
-1. **Create the Component**: Write `RadarWidget.tsx` in `frontend/src/registry/widgets/`.
-2. **Define Options Form**: Create a simple settings form inside `WidgetRegistry.tsx` (for editing Radar options).
-3. **Register Entry**: Add an object to `WIDGET_REGISTRY`:
-   ```typescript
-   radar: {
-     type: 'radar',
-     name: 'Radar Radar Chart',
-     defaultTitle: 'Performances Map',
-     defaultLayout: { w: 6, h: 3 },
-     defaultOptions: { source: 'metrics' },
-     component: RadarWidget,
-     editor: RadarEditor
-   }
-   ```
-*That's it!* The dashboard render loop automatically discovers, places, formats, and handles saving configuration options for the new chart type without modifying grid layouts.
-
-### 2. State & Performance Strategies
-- **Isolated Re-renders**: We use selector hooks in **Zustand** to bind individual widgets. When a widget fetches data or encounters a query error, only that card updates.
-- **Drag Optimization**: Grid coordinates updates are buffered by `react-grid-layout` and saved on drag/resize-end, preventing high-frequency updates during resizing from bottlenecking the CPU.
-- **Isolated Memoization**: Components are wrapped in `React.memo` using custom props comparison to bypass visual shifts in other widget layouts.
-
-### 3. Fail-safe Resiliency
-- **Widget-Level Error Boundaries**: If a data telemetry API returns an error or invalid Zod schema matching, the widget container catches the failure and renders an isolated "Telemetry Query Fault" recovery screen inside the card. The rest of the dashboard layout continues displaying metrics normally.
-- **Offline Persistence Fallback**: If MongoDB becomes offline, the app writes layout changes directly to `LocalStorage` and flags synchronization status so configurations remain fully editable and persistent.
 
 ![alt text](image.png)
 
