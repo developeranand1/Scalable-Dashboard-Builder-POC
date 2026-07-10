@@ -93,3 +93,6 @@ To add a **5th Chart Type** (e.g. Radar Chart):
 - **Widget-Level Error Boundaries**: If a data telemetry API returns an error or invalid Zod schema matching, the widget container catches the failure and renders an isolated "Telemetry Query Fault" recovery screen inside the card. The rest of the dashboard layout continues displaying metrics normally.
 - **Offline Persistence Fallback**: If MongoDB becomes offline, the app writes layout changes directly to `LocalStorage` and flags synchronization status so configurations remain fully editable and persistent.
 
+![alt text](image.png)
+
+![alt text](image-1.png)
